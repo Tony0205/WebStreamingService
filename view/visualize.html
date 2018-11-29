@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <title>Visualize VIDEO!</title>
+</head>
+<body>
+    <video src="" id="video" autoplay="true"></video>
+    <div id="logger">로거는??</div>
+
+    <script>
+        const socket = io();
+                              
+        var blobUrl = URL.createObjectURL(blob);
+
+        var xhr = new XMLHttpRequest;
+        xhr.responseType = 'blob';
+
+        let dataUrl;
+
+        xhr.onload = function() {
+            var recoveredBlob = xhr.response;
+
+            var reader = new FileReader;
+            
+            // 컨텐츠를 특정 blob 이나 file에서 읽어오는 역할.
+            // 완료가 되면, base64 인코딩된 스트링 데이터가 result 속성에 담긴다.
+            reader.readAsDataURL(recoveredBlob);
+
+            reader.onload = function() {
+                var blobAsDataUrl = reader.result;
+                dataUrl = blobAsDataUrl;
+                console.log(dataUrl);
+            };
+
+        };
+        
+        xhr.open('GET', blobUrl);
+        xhr.send();
+        
+        
+
+
+
+        // socket.on('live start', function(streamURL) {            
+        //     console.log('live start!!', streamURL);
+        //     let video = document.getElementById("video");
+        //     video.src = streamURL; // 웹캠과 마이크 stream의 blob url을 삽입한다. (A사 방송과 동일한 방식)
+                        
+        //     $("#logger").text(streamURL);
+        // });
+    
+    </script>
+</body>
+</html>

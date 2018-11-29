@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/Tony0205/WebStreamingService/issues"
   },
-  "homepage": "https://github.com/Tony0205/WebStreamingService#readme"
+  "homepage": "https://github.com/Tony0205/WebStreamingService#readme",
+  "dependencies": {
+    "express": "^4.16.3",
+    "log": "^1.4.0",
+    "socket.io": "^2.0.4"
+  }
 }

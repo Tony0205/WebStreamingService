@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <title>pafreecatv</title>
+</head>
+
+<body>
+    <video src="" id="video" autoplay="true"></video>
+
+    <canvas id="preview" style="display:none;"></canvas>
+
+    <div id="logger"></div>
+
+    <script type="text/javascript">
+        // Canvas DOM object get
+        let canvas = document.getElementById("preview");
+        // get 2d context from Canvas DOM Object
+        let context = canvas.getContext("2d");
+
+        canvas.width = 800;
+        canvas.height = 600;
+
+        context.width = canvas.width;
+        context.height = canvas.height;
+
+        let video = document.getElementById("video");
+
+        const socket = io();
+
+        function logger(msg) {
+            $("#logger").text(msg);
+        }
+
+        function loadCam(stream) {
+            // console.log(stream); // 웹캠과 마이크의 stream
+
+            // 웹캠과 마이크 stream의 blob url을 삽입한다. (A사 방송과 동일한 방식)
+            let mediaStreamObjURL = window.URL.createObjectURL(stream);            
+            
+            video.src = mediaStreamObjURL;
+
+            // socket에 데이터를 전송하기 위한 function
+            viewVideo(mediaStreamObjURL);
+
+            logger("Camera is loaded [OK]");
+        }
+
+        function loadFail(params) {
+            logger("Camera isn't loaded [FAIL]");
+        }
+
+        function viewVideo(mediaStreamObjURL){                                                       
+            socket.emit('stream object', mediaStreamObjURL);
+        }
+
+        // function viewVideo(video, context){
+        //     context.drawImage(video, 0, 0, context.width, context.height);
+        //     socket.emit('stream', canvas.toDataURL('image/webp'));
+        // }
+
+        $(function() {        
+            // 브라우저에서 WebRTC API인 getUserMedia가 존재하는지 확인한다.
+            navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+
+            if (navigator.getUserMedia) {
+                //video HD 화질 옵션 추가
+                let hdConstraints = {
+                    video: {
+                        mandatory: {
+                            minWidth: 1280,
+                            minHeight: 720
+                        }
+                    },
+                    audio: true
+                };
+
+                navigator.getUserMedia(hdConstraints, loadCam, loadFail);
+            }
+
+            // setInterval(function() {
+            //     viewVideo(video, context);    
+            // }, 50);
+
+        });
+
+
+    
+    </script>
+
+</body>
+</html>
